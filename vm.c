@@ -44,7 +44,7 @@ eval_parens(Instruction *instructions)
     newstack = apex_malloc(instr_size);
 
     while (instr.op != OP_HALT) {
-        print_instruction(instr);
+        /* print_instruction(instr); */
         switch (instr.op) {
         case OP_LPAR: 
             if (paren_count == 0)

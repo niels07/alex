@@ -1,16 +1,34 @@
 CC = gcc
 CFLAGS = -g -ansi -lm -Wall -Wno-unused-function
 OBJ = y.tab.o lex.yy.o apex.o util.o vm.o
+INSTALL_DIR = /usr/lib/
+INCLUDE_DIR = /usr/include
+BIN_DIR = /usr/bin
+OUT = libapex.so
 BIN = apex
 
-all: $(BIN)
+all: apex
 
-$(BIN): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(BIN)
+install: $(OUT)  $(BIN)
+	cp $(OUT) $(INSTALL_DIR)
+	cp apex.h $(INCLUDE_DIR)
+	cp $(BIN) $(BIN_DIR)
+
+deinstall:
+	rm -f $(INSTALL_DIR)/$(OUT)
+	rm -f $(INCLUDE_DIR)/libapex.h
+	rm -f $(BIN_DIR)/$(BIN)
+
+apex: $(OBJ) main.o
+	$(CC) -shared $(CFLAGS) $(OBJ) -o $(OUT)
+	$(CC) $(CFLAGS) $(OBJ) main.o -o apex
 
 lex: lex.l parse.y
 	yacc -y -d parse.y
 	lex lex.l
+
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c
 
 y.tab.o: y.tab.h y.tab.c
 	$(CC) $(CFLAGS) -c y.tab.c
@@ -32,4 +50,6 @@ vm.o: vm.h vm.c
 
 clean: 
 	rm -f $(OBJ)
+	rm -f $(OUT)
+	rm -f examples/simple
 
