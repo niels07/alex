@@ -1,4 +1,4 @@
-/* vm.h: apex virtual machine. */
+/* main.c: main function for the executable. */
 
 /*
  * Apex calculator
@@ -26,50 +26,30 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef VM_H
-#define VM_H
+#include <stdlib.h>
+#include <stdio.h>
+#include "parse.h"
+#include "apex.h"
 
-/* Opcode definions. */
-typedef enum {
-    OP_HALT,
-    OP_NUM,
-    OP_ADD,
-    OP_SUB, 
-    OP_MULT,
-    OP_DIV,
-    OP_POW,
-    OP_LPAR,
-    OP_RPAR,
-    OP_STORE,
-    OP_PRINT,
-    OP_VAR
-} Opcode;
+#define PROMPT "apex> "
+    
+int
+main(int argc, char *argv[])
+{
+    char line[255];
 
-/* Instructions for the vm. */
-typedef struct {
-    Opcode op;
-    float arg;
-} Instruction;
+    if (argc == 1) {
+        fprintf(stdout, PROMPT);
+        while (fgets(line, 255, stdin)) {
+            apex_dostring(line);
+            fprintf(stdout, PROMPT);
+        }
+        return EXIT_SUCCESS;
+    }
 
-/* Return integer value at OFFSET. */
-extern int apex_getint(const int /* offset */);
+    if (!apex_dofile(argv[1]))
+        return EXIT_FAILURE;
 
-/* Return number value at OFFSET. */
-extern float apex_getnumber(const int /* offset */);
-
-/* Execute a series of opcodes. */
-void apex_execop(void);
-
-/* Add an operation to the stack. */
-extern void apex_addop(Opcode  /* op */, const float /* arg */); 
-
-/* Get index of top element. */
-extern int apex_gettop(void);
-
-/* Set apex variable. */
-extern void apex_setvar(Opcode /* op */, const char * /*name */);
-
-/* Clear the instruction stack. */
-extern void apex_reset(void);
-
-#endif /* VM_H */
+    apex_end();
+    return EXIT_SUCCESS;
+}

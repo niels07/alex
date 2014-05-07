@@ -40,12 +40,16 @@
       know about them.  */
    enum yytokentype {
      NUMBER = 258,
-     UMINUS = 259
+     ID = 259,
+     PRINT = 260,
+     UMINUS = 261
    };
 #endif
 /* Tokens.  */
 #define NUMBER 258
-#define UMINUS 259
+#define ID 259
+#define PRINT 260
+#define UMINUS 261
 
 
 
@@ -55,14 +59,15 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 18 "parse.y"
+#line 31 "parse.y"
 
     float f;
+    char *id;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 66 "y.tab.h"
+#line 71 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

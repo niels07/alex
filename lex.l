@@ -6,12 +6,19 @@
 #include "parse.h"
 
 Uint
+apex_parse(void)
+{
+    apex_reset();
+    return !yyparse();
+}
+
+Uint
 apex_dostring(const char *string)
 {
     YY_BUFFER_STATE buf = yy_scan_string(string); 
 
     yy_switch_to_buffer(buf);
-    yyparse(); 
+    apex_parse(); 
     yy_delete_buffer(buf);
 
     if (parse_error)
@@ -26,10 +33,12 @@ apex_dostring(const char *string)
 %%
 
 [0-9]* |
-[0-9]+\.[0-9]+  { yylval.f = atof(yytext); return NUMBER; }
-[-+*/()%^()]    { return *yytext; }
-[ \t]           /* ignore whitespace */ ;
-.               { yyerror("Invalid character"); }
+[0-9]+\.[0-9]+       { yylval.f = atof(yytext); return NUMBER;   }
+[-+*/()%^()=;]       { return *yytext;                           }
+"print"              { return PRINT;                             }
+[a-zA-Z][a-zA-Z0-9]* { yylval.id = savestr(yytext); return ID;   }
+[ \t\n]              /* ignore whitespace and newlines */ ;
+.                    { yyerror("Invalid character");             }
 %%
 
 int

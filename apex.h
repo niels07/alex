@@ -22,5 +22,11 @@ extern void apex_addop(unsigned int /* op */, const float /* arg */);
 /* Get index of top element. */
 extern int apex_gettop(void);
 
+/* Execute a file. */
+extern unsigned apex_dofile(const char * /* path */);
+
+/* Cleanup. */
+extern void apex_end(void);
+
 #endif /* APEX_H */
 

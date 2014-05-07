@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g -ansi -lm -Wall -Wno-unused-function
-OBJ = y.tab.o lex.yy.o apex.o util.o vm.o
+OBJ = y.tab.o lex.yy.o apex.o util.o vm.o table.o
 INSTALL_DIR = /usr/lib/
 INCLUDE_DIR = /usr/include
 BIN_DIR = /usr/bin
@@ -44,6 +44,9 @@ parse.o: parse.h parse.c
 
 util.o: util.h util.c
 	$(CC) $(CFLAGS) -c util.c
+
+table.o: table.h table.c
+	$(CC) $(CFLAGS) -c table.c
 
 vm.o: vm.h vm.c
 	$(CC) $(CFLAGS) -c vm.c

@@ -1,19 +1,67 @@
+/* vm.c: apex virtual machine. */
+
+/*
+ * Apex calculator
+ * by Niels Vanden Eynde
+ * 
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 #include <stdlib.h>
 #include <math.h>
 #include "vm.h"
+#include "table.h"
 #include "util.h"
 #include "apex.h"
 
 #define GROW_STACK 8
 
-static char *opnames[] = { "halt", "num", "add", "sub", "mult", "div", "pwr", "rpar", "lpar" };
+static char *opnames[] = { 
+    "halt", 
+    "num", 
+    "add", 
+    "sub", 
+    "mult", 
+    "div", 
+    "pwr", 
+    "rpar", 
+    "lpar", 
+    "store", 
+    "print", 
+    "var" 
+};
 
-static Instruction *instr_stack;
+/* Stack with the instructions. */
+static Instruction *instr_stack = NULL;
+
+/* Number of instructions on the stack. */
 static Uint instr_count = 0;
+
+/* Current allocated size of the stack. */
 static size_t instr_size = 255;
 
 static float op_stack[255];
 
+/* Top index of the stack. */
 static int top = 0;
 
 static float execop(Instruction * /* instructions */);
@@ -204,6 +252,20 @@ apex_execop(void)
             op_stack[++top] = instr.arg;
             break;
 
+        case OP_STORE:
+            op_stack[(int)instr.arg] = op_stack[top];
+            top--;
+            break;
+
+        case OP_PRINT:
+            fprintf(stdout, "%f\n", op_stack[top]);
+            top--;
+            break;
+
+        case OP_VAR:
+            op_stack[++top] = op_stack[(int)instr.arg];
+            break;
+
         case OP_HALT:
             break;
 
@@ -249,4 +311,23 @@ apex_addop(Opcode op, const float arg)
     instr_stack[instr_count].op = op;
     instr_stack[instr_count].arg = arg;
     instr_count++;
+}
+
+/* Clear the instruction stack. */
+void
+apex_reset(void)
+{
+    if (instr_stack != NULL)
+        free(instr_stack);
+
+    instr_stack = NULL;
+    instr_count = 0;
+    instr_size = 255;
+}
+
+void 
+apex_setvar(Opcode op, const char *name)
+{
+    Symbol *symbol = apex_addsymbol(name);
+    apex_addop(op, symbol->offset);
 }

@@ -9,7 +9,9 @@ extern char *yytext;
 extern int yylex(void);
 extern int fileno(FILE *);
 extern int yyparse(void);
+extern Uint apex_parse(void);
 extern Uint apex_dostring(const char * /*string */);
 extern Uint parse_error;
+extern FILE *yyin;
 
 #endif /* PARSE_H */

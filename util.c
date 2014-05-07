@@ -24,6 +24,20 @@ apex_malloc(size_t size)
     return ptr;
 }
 
+/* Allocate a chunk of memory of SIZE and intialize, 
+   exit with an error message if memory could not be allocated. */
+void *
+apex_calloc(size_t num, size_t size)
+{
+    void *ptr = calloc(num, size);
+
+    if (ptr == NULL)
+        out_of_memory("calloc", size);
+
+    return ptr;
+}
+
+
 /* Reallocate a chunk of memory of SIZE, free original 
    memory and exit if memory could not be allocated. 
    If M is NULL, just return apex_malloc() instead. */
