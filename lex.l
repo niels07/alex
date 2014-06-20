@@ -34,8 +34,17 @@ apex_dostring(const char *string)
 
 [0-9]* |
 [0-9]+\.[0-9]+       { yylval.f = atof(yytext); return NUMBER;   }
-[-+*/()%^()=;]       { return *yytext;                           }
+[-+*/()%^{}=;]       { return *yytext;                           }
 "print"              { return PRINT;                             }
+"if"                 { return IF;                                }
+"else"               { return ELSE;                              }
+"while"              { return WHILE;                             }
+"eq"                 { return EQ;                                }
+"ne"                 { return NE;                                }
+"lt"                 { return LT;                                }
+"gt"                 { return GT;                                }
+"le"                 { return LE;                                }
+"ge"                 { return GE;                                }
 [a-zA-Z][a-zA-Z0-9]* { yylval.id = savestr(yytext); return ID;   }
 [ \t\n]              /* ignore whitespace and newlines */ ;
 .                    { yyerror("Invalid character");             }

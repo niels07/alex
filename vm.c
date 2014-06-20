@@ -216,10 +216,10 @@ execop(Instruction *instructions)
 void
 apex_execop(void)
 {
-    int pc = 0;
+    Uint pos = 0;
 
     instr_stack = eval_parens(instr_stack);
-    Instruction instr = instr_stack[pc++];
+    Instruction instr = instr_stack[pos++];
 
     while (instr.op != OP_HALT) {
         switch (instr.op) {
@@ -262,8 +262,49 @@ apex_execop(void)
             top--;
             break;
 
-        case OP_VAR:
+        case OP_EQ: 
+            op_stack[top - 1] = op_stack[top - 1] == op_stack[top];
+            top--;
+            break;
+
+        case OP_NE: 
+            op_stack[top - 1] = op_stack[top - 1] != op_stack[top];
+            top--;
+            break;
+
+        case OP_GT:
+            op_stack[top - 1] = op_stack[top - 1] > op_stack[top];
+            top--;
+            break;
+
+        case OP_LT:
+            op_stack[top - 1] = op_stack[top - 1] < op_stack[top];
+            top--;
+            break;
+        
+        case OP_LE:
+            op_stack[top - 1] = op_stack[top - 1] <= op_stack[top];
+            top--;
+            break;
+
+        case OP_GE:
+            op_stack[top - 1] = op_stack[top - 1] >= op_stack[top];
+            top--;
+            break;
+
+         case OP_VAR:
             op_stack[++top] = op_stack[(int)instr.arg];
+            break;
+
+        case OP_JMP_FALSE:
+            if (op_stack[top] == 0)
+                pos = instr.arg;
+            top--;
+            break;
+
+        case OP_JMP_TRUE:
+            if (op_stack[top] > 0)
+                pos = instr.arg;
             break;
 
         case OP_HALT:
@@ -274,7 +315,7 @@ apex_execop(void)
             break;
         }
 
-        instr = instr_stack[pc++];
+        instr = instr_stack[pos++];
     }
 }
 
@@ -311,6 +352,28 @@ apex_addop(Opcode op, const float arg)
     instr_stack[instr_count].op = op;
     instr_stack[instr_count].arg = arg;
     instr_count++;
+}
+
+/* Set operation at specific address. */
+void 
+apex_setop(Uint addr, Opcode op, const float arg)
+{
+    instr_stack[addr].op = op;
+    instr_stack[addr].arg = arg;
+}
+
+/* Increment the offset and return the previous one. */ 
+Uint
+apex_nextpos(void)
+{
+    return instr_count++;
+}
+
+/* Return the current offset. */
+Uint
+apex_getpos(void)
+{
+    return instr_count;
 }
 
 /* Clear the instruction stack. */

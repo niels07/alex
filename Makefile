@@ -54,5 +54,6 @@ vm.o: vm.h vm.c
 clean: 
 	rm -f $(OBJ)
 	rm -f $(OUT)
+	rm -f main.o
 	rm -f examples/simple
 

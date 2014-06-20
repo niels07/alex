@@ -29,6 +29,8 @@
 #ifndef VM_H
 #define VM_H
 
+#include "util.h"
+
 /* Opcode definions. */
 typedef enum {
     OP_HALT,
@@ -42,7 +44,15 @@ typedef enum {
     OP_RPAR,
     OP_STORE,
     OP_PRINT,
-    OP_VAR
+    OP_VAR,
+    OP_EQ,
+    OP_NE,
+    OP_LT,
+    OP_GT,
+    OP_GE,
+    OP_LE,
+    OP_JMP_TRUE,
+    OP_JMP_FALSE
 } Opcode;
 
 /* Instructions for the vm. */
@@ -65,6 +75,15 @@ extern void apex_addop(Opcode  /* op */, const float /* arg */);
 
 /* Get index of top element. */
 extern int apex_gettop(void);
+
+/* Increment the offset and return the previous one. */ 
+extern Uint apex_nextpos(void);
+
+/* Return the current offset. */
+extern Uint apex_getpos(void);
+
+/* Set operation at specific address. */
+extern void apex_setop(Uint /* addr */, Opcode /* op */, const float /* arg */);
 
 /* Set apex variable. */
 extern void apex_setvar(Opcode /* op */, const char * /*name */);

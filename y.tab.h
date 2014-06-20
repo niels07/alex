@@ -42,14 +42,32 @@
      NUMBER = 258,
      ID = 259,
      PRINT = 260,
-     UMINUS = 261
+     IF = 261,
+     ELSE = 262,
+     WHILE = 263,
+     EQ = 264,
+     NE = 265,
+     UMINUS = 266,
+     LE = 267,
+     GE = 268,
+     GT = 269,
+     LT = 270
    };
 #endif
 /* Tokens.  */
 #define NUMBER 258
 #define ID 259
 #define PRINT 260
-#define UMINUS 261
+#define IF 261
+#define ELSE 262
+#define WHILE 263
+#define EQ 264
+#define NE 265
+#define UMINUS 266
+#define LE 267
+#define GE 268
+#define GT 269
+#define LT 270
 
 
 
@@ -63,11 +81,12 @@ typedef union YYSTYPE
 
     float f;
     char *id;
+    unsigned int i;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 71 "y.tab.h"
+#line 90 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
